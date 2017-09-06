@@ -1,0 +1,129 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tab-module</title>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+    <style>
+        li{
+            list-style: none;
+        }
+        ul,li{
+            margin: 0;
+            padding: 0;
+        }
+        .tab{
+            width: 600px;
+            height: 200px;
+            margin: 20px auto;
+            border: 1px solid #000;
+        }
+        .selector-box{
+            margin: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .selector-box>li{
+            display: inline-block;
+            padding: 20px;
+            cursor: pointer;
+
+        }
+        .selector-box .active{
+            position: relative;
+            top: 1px;
+            color: blueviolet;
+            border: 1px solid #ccc;
+            border-bottom-color: #fff;
+            border-radius: 4px 4px 0 0;
+        }
+        .contant-box{
+            text-align: center;
+        }
+        .contant-box>li{
+            font-size: 1rem;
+            line-height: 100px;
+            display: none;
+        }
+        .contant-box>.active{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="tab">
+    <ul class="selector-box">
+        <li class="active">Monday</li>
+        <li>Tuesday</li>
+        <li>Wednesday</li>
+    </ul>
+    <ul class="contant-box">
+        <li class="active">今天第一天上班</li>
+        <li>继续还要继续上班</li>
+        <li>今天也是要上班的哦</li>
+    </ul>
+
+</div>
+<div class="tab">
+    <ul class="selector-box">
+        <li class="active">Monday</li>
+        <li>Tuesday</li>
+        <li>Wednesday</li>
+    </ul>
+    <ul class="contant-box">
+        <li class="active">今天第一天上班</li>
+        <li>继续还要继续上班</li>
+        <li>今天也是要上班的哦</li>
+    </ul>
+    </div>
+<script>
+    function Tab($container){
+        this.container = $container;
+        this.tabs = this.container.find($('.selector-box li'));//find 后代元素 children 子元素
+        this.contents = this.container.find($('.contant-box li'));
+        this.bind();
+    }
+    Tab.prototype = {
+        bind: function(){
+            var _this = this;
+            this.container.children($('.selector-box')).on('click','li',function(){
+                _this.tabs.each((i,item)=>{
+                    $(item).removeClass('active'); //jquery的each方法遍历得到的items是原生DOM对象，要转化为$对象才可用jquery方法！！
+                })
+                $(this).addClass('active');
+                var index = [].indexOf.call(_this.tabs,this);//不可以用$(this)来获取下标，要用原生的this,当数组中找不到会返回-1！！
+                _this.contents.each((i,item)=>{
+                    $(item).removeClass('active');
+                })
+                _this.contents.eq(index).addClass('active');
+            })
+        }
+    }
+    var tab1 = new Tab($('.tab').eq(0))
+    var tab2 = new Tab($('.tab').eq(1))
+    //原生非组件代码
+    //        function $(id){
+    //            return document.querySelector(id);
+    //        }
+    //        function $$(cls){
+    //            return document.querySelectorAll(cls);
+    //        }
+    //        var selectorbox = $('.selector-box');
+    //        var selector = $$('.selector-box>li');
+    //        var contant = $$('.contant-box>li');
+    //        selectorbox.addEventListener('click',function(e){
+    //                    for(var i = 0; i < selector.length; i++){
+    //                        selector[i].classList.remove('active');
+    //                    }
+    //                    e.target.classList.add('active');
+    //                    for(var i = 0; i < contant.length; i++){
+    //                        contant[i].classList.remove('active');
+    //                    }
+    //                    var i = [].indexOf.call(selector,$('.active'));
+    //                    contant[i].classList.add('active');
+    //                }
+    //        )
+</script>
+</body>
+</html>
+
+
+
