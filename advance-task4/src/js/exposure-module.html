@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>exposure-module</title>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.3/jquery.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        ul{
+            list-style: none;
+        }
+        #layout{
+            width: 540px;
+            margin: 30px auto;
+            /*border: 1px solid #000;*/
+            text-align: center;
+        }
+        #layout .container{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+
+        }
+        #layout .container .cell{
+            width: 250px;
+            height: 250px;
+            /*border: 1px solid #000;*/
+            margin-bottom: 20px;
+        }
+        #layout .container .cell img{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="layout">
+    <h2>Photos</h2>
+    <ul class="container">
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869cbf2b0ac.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869cbf76acf.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869cbf7f29f.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869cbf89880.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869cbf8ab57.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869cbf946e4.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869cbfadebd.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869cbfb9742.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869cbfd7661.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869cc08cb64.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869d6868138.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869d687ce35.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869d6884c80.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869d688e7f4.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869d689301b.jpg"></li>
+        <li class="cell"><img src="https://i.loli.net/2017/08/05/5985e09e6c0f9.gif"  data-src="https://i.loli.net/2017/08/06/59869d689d726.jpg"></li>
+    </ul>
+    <p>hello</p>
+    <p>world</p>
+</div>
+<script type="text/javascript">
+    function exposure($target,callback) {
+        this.$target = $target;
+        this.callback = callback;
+        this.bind();
+    }
+    exposure.prototype = {
+        isVisible: function($img){
+            var scrollTop = $(window).scrollTop();
+            var windowHeight = $(window).height();
+            var offsetTop = $img.offset().top;
+            if(offsetTop < scrollTop + windowHeight && offsetTop > scrollTop){
+                return true;
+            }
+            return false;
+    },
+        hasShowed: function($img){
+            if($img.attr("src") === $img.attr("data-src")){
+                return true;
+            }
+            return false;
+        },
+        bind: function(){
+            var scrollClock;
+            var _this = this;
+            _this.callback();
+            $(window).on('scroll',function(){
+                if(scrollClock){
+                    clearTimeout(scrollClock)
+                }//第一次滚动，时钟创建scrollClock为true，后面每滚动一次都会把时钟重置，直到最后一次滚动才会在0.3秒后执行时钟内的函数。
+                scrollClock = setTimeout(function () {
+                    _this.callback()
+                    },300)
+            })
+        }
+    }
+
+    //在图片上添加曝光功能
+    var callback = function () {
+        var _this = this;
+        console.log(this)
+        _this.$target.each(function () {
+            if(_this.isVisible($(this)) && !_this.hasShowed($(this))){
+                $(this).attr("src",$(this).attr("data-src"));
+            }
+        })
+    }
+    var lazyLoad = new exposure($('.container li img'),callback)
+
+    //在P标签上添加曝光功能
+    var exposure = new exposure($('#layout p'),function () {
+        var _this = this;
+        console.log(this)
+        _this.$target.each(function () {
+            if(_this.isVisible($(this))){
+                $(this).after('world');
+            }
+        })
+    })
+
+
+
+
+    //封装前的写法
+//    checkRender()
+//    var scrollClock;
+//    $(window).on('scroll',function(){
+//        if(scrollClock){
+//            clearTimeout(scrollClock)
+//        }//第一次滚动，时钟创建scrollClock为true，后面每滚动一次都会把时钟重置，直到最后一次滚动才会在0.3秒后执行时钟内的函数。
+//        scrollClock = setTimeout(function () {
+//            checkRender()
+//            console.log('hello')
+//        },300)
+//    })
+//    //检测img是否在视窗中，如果首次出现在视窗则把图片下载下来。
+//    function checkRender() {
+//        $('.container .cell img').each(function () {
+//            if(isVisible($(this)) && !hasShowed($(this))){
+//                $(this).attr("src",$(this).attr("data-src"));
+//            }
+//        })
+//    }
+//    //检测是否是首次出现
+//    function hasShowed($img){
+//        if($img.attr("src") === $img.attr("data-src")){
+//            return true;
+//        }
+//        return false;
+//    }
+//    //检测img是否在出现在视窗
+//    function isVisible($img){
+//        var scrollTop = $(window).scrollTop();
+//        var windowHeight = $(window).height();
+//        var offsetTop = $img.offset().top;
+//        if(offsetTop < scrollTop + windowHeight && offsetTop > scrollTop){
+//            return true;
+//        }
+//        return false;
+//    }
+</script>
+</body>
+</html>
