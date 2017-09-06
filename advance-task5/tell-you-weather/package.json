@@ -1,0 +1,24 @@
+{
+  "name": "tell-you-weather",
+  "version": "1.0.1",
+  "description": "this is a jirengu task demo",
+  "main": "weather",
+  "bin": {
+    "weather": "./index.js"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "no"
+  },
+  "keywords": [
+    "weather"
+  ],
+  "author": "orange",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "axios": "^0.16.2"
+  }
+}

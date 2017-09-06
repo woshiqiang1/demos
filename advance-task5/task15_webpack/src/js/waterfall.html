@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <title>waterfall</title>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        ul,ol{
+            list-style: none;
+        }
+        #layout{
+            text-align: center;
+            margin-top: 30px ;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        .container{
+            position: relative;
+            display: flex;
+            border: 1px solid #000;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .container li{
+            margin: 2.5px 5px;
+            position: absolute;
+            width: 200px;
+            transition: all 1s;
+        }
+        .mark{
+            width: 50px;
+            height: 5px;
+            border: 1px solid #000;
+            visibility: hidden;
+        }
+        #layout .button{
+            position: absolute;
+            padding: 5px 10px;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+<div id="layout">
+    <h1>Photos Wall</h1>
+    <ul class="container">
+    <li><img src="http://lorempixel.com/200/300" alt=""></li>
+    <li><img src="http://lorempixel.com/200/200" alt=""></li>
+    <li><img src="http://lorempixel.com/200/250" alt=""></li>
+    <li><img src="http://lorempixel.com/200/500" alt=""></li>
+    <li><img src="http://lorempixel.com/200/400" alt=""></li>
+    <li><img src="http://lorempixel.com/200/350" alt=""></li>
+    <li><img src="http://lorempixel.com/200/600" alt=""></li>
+    <li><img src="http://lorempixel.com/200/700" alt=""></li>
+    <li><img src="http://lorempixel.com/200/450" alt=""></li>
+    <li><img src="http://lorempixel.com/200/300" alt=""></li>
+    <li><img src="http://lorempixel.com/200/550" alt=""></li>
+    <li><img src="http://lorempixel.com/200/450" alt=""></li>
+    <li><img src="http://lorempixel.com/200/350" alt=""></li>
+    <li><img src="http://lorempixel.com/200/400" alt=""></li>
+    <li><img src="http://lorempixel.com/200/550" alt=""></li>
+    <li><img src="http://lorempixel.com/200/600" alt=""></li>
+    <li><img src="http://lorempixel.com/200/700" alt=""></li>
+    <li><img src="http://lorempixel.com/200/350" alt=""></li>
+    </ul>
+    <button class="button">获取更多</button>
+    <div class="mark"></div>
+</div>
+<script>
+    function WaterfallLayout($container) {
+        this.$container = $container;
+        this.$button = this.$container.siblings($('.button'))
+        this.init();
+        var _this = this;
+        window.onload =function(){_this.waterfallPlace();}
+    }
+    WaterfallLayout.prototype = {
+    init: function(){
+        this.hightCountArray = [];
+        var _this = this;
+        this.$container.find($('img')).eq(0).load(
+            function(){
+                _this.picWidth = _this.$container.find($('img'))[0].width
+                _this.picColumn = Math.floor(_this.$container.width()/_this.picWidth)
+                for (var i = 0;i < _this.picColumn; i++){
+                    _this.hightCountArray[i] = 0;
+                }
+                console.log(_this.hightCountArray)
+            }
+        )
+
+    },
+    waterfallPlace: function(){
+        var _this = this;
+        this.$container.find($('li')).each(function () {
+            _this.minHeight = Math.min.apply(null,_this.hightCountArray);
+            _this.index = _this.hightCountArray.indexOf(_this.minHeight);
+            $(this).css({left: $(this).outerWidth(true)*_this.index , top: _this.minHeight});
+            _this.hightCountArray[_this.index] += $(this).outerHeight(true);
+            _this.$container.css({height: _this.hightCountArray[_this.index]});
+            _this.$button.css({left: 575,top: _this.hightCountArray[_this.index] + 450})
+        })
+    },
+        getPic: function(){
+            this.htmls = '';
+            this.picArray = [];
+            for(var i = 0;i < 6; i++){
+                picArray[i] = 'http://lorempixel.com/200/' + (Math.floor(Math.random()*10)*50 + 300)
+            }
+            //注意$.each()和$nodes.each()的区别，后者只能遍历jqueryDOM类数组
+            var _this = this;
+            $.each(this.picArray,function (index,item) {
+                _this.htmls += '<li> <img src= ' + item + '><li>'
+            })
+            this.$container.append($(this.htmls))
+        }
+    }
+var waterfall1 = new WaterfallLayout($('.container'))
+
+
+//    function waterfallPlace() {
+//        var picWidth = $('.container li').width();
+//        var picColumn = Math.floor($('.container').width()/picWidth);
+//        var hightCountArray = [];
+//        for (var i = 0;i < picColumn; i++){
+//            hightCountArray[i] = 0;
+//        }
+//        $('.container li ').each(function () {
+//            var minHeight = Math.min.apply(null,hightCountArray);
+//            var index = hightCountArray.indexOf(minHeight);
+//            $(this).css({left: $(this).outerWidth(true)*index , top: minHeight});
+//            hightCountArray[index] += $(this).outerHeight(true);
+//            $('.container').css({height: hightCountArray[index]})
+//        })
+//    }
+//    $(window).on('scroll',function(){
+//        if(isShowed($('.mark'))){
+//            getPic()
+//            waterfallPlace()
+//        }
+//    })
+//    //页面元素（DOM和图片）加载完执行瀑布流布局，图片没加载完成时，li是没有高度的。
+//    window.onload = function () {
+//        waterfallPlace()
+//    }
+//    //当窗口大小改变时，重新计算图片列数，并布局
+//    $(window).resize(function () {
+//        waterfallPlace()
+//    })
+//    function getPic() {
+//        var htmls = '';
+//        var picArray = [];
+//        for(var i = 0;i < 6; i++){
+//            picArray[i] = 'http://lorempixel.com/200/' + (Math.floor(Math.random()*10)*50 + 300)
+//        }
+//        //注意$.each()和$nodes.each()的区别，后者只能遍历jqueryDOM类数组
+//        $.each(picArray,function (index,item) {
+//            htmls += '<li> <img src= ' + item + '><li>'
+//        })
+//        $('.container').append($(htmls))
+//    }
+//    function isShowed($mark) {
+//        var scroolTop = $(window).scrollTop();
+//        var windowHeight = $(window).height();
+//        var offset = $mark.offset().top;
+//        var markHeight = $mark.height();
+//        if(offset < scroolTop + windowHeight && offset + markHeight > scroolTop){
+//            return true;
+//        }else {
+//            return false;
+//        }
+//    }
+</script>
+</body>
+</html>
